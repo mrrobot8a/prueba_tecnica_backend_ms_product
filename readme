@@ -35,25 +35,20 @@ GRANT ALL PRIVILEGES ON DATABASE inventario_db TO inventario_user;
 bash
 docker network create inventario-network (Solo si no existe)
 # Construir imagen
-docker build -t inventory-service .
+docker build -t ms_product .
 
 # Ejecutar contenedor
-docker run -d \
-  --name inventory-service \
-  --network inventario-net \
-  -p 8080:8080 \
-  -e SPRING_DATASOURCE_URL=jdbc:postgresql://postgres-db:5432/inventario_db \
-  -e SPRING_DATASOURCE_USERNAME=inventario_user \
-  -e SPRING_DATASOURCE_PASSWORD=dbpassword \
-  -e PRODUCT_SERVICE_URL=http://product-service:8080 \
-  inventory-service
+docker run  --name msproduct --network inventario-network  -p 8080:8080  \
+-e SPRING_DATASOURCE_URL="jdbc:postgresql://host.docker.internal:5432/inventario_db"   \
+-e SPRING_DATASOURCE_USERNAME="postgres"   -e SPRING_DATASOURCE_PASSWORD="123456"   -e APP_SECURITY_API_KEY="clave-secreta-123"  \ 
+ms_product
 🔍 Endpoints Principales
-Método	Endpoint	Descripción
-POST	/api/v1/inventory	Crear nuevo ítem en inventario
-PUT	/api/v1/inventory	Actualizar inventario
-GET	/api/v1/inventory/{productId}	Consultar por ID de producto
-POST	/api/v1/inventory/process-purchase	Procesar compra
-GET	/api/v1/inventory/low-stock/{threshold}	Productos con stock bajo
+Método HTTP	Endpoint	Descripción
+POST	/api/v1/product/create	Crear un nuevo producto
+PUT	/api/v1/product/update/{id}	Actualizar un producto por ID
+GET	/api/v1/product/get-by-id/{id}	Obtener un producto por ID
+GET	/api/v1/product/get-all	Obtener la lista de productos
+
 🔌 Configuración de Conexiones
 properties
 # application-prod.properties
